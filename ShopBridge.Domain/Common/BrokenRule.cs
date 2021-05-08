@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace ShopBridge.Domain.Models.Validation.Common
+namespace ShopBridge.Domain.Common
 {
     public class BrokenRule
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace ShopBridge.Domain.Models.Validation.Common
+namespace ShopBridge.Domain.Common
 {
     public interface IValidator<in T>
     {

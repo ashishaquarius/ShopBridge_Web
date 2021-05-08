@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Mvc;
+using ShopBridge.Domain.Common;
 using ShopBridge.Domain.Models.DatabaseEntities;
 using ShopBridge.Domain.Repositories.ProductRepo;
 using Swashbuckle.Swagger.Annotations;
 
 namespace ShopBridge_Web.Controllers.ApiControllers
 {
-    
+
     public class ProductController : ApiController
     {
         private readonly IProductRepository _productRepository;
@@ -20,61 +23,122 @@ namespace ShopBridge_Web.Controllers.ApiControllers
             _productRepository = productRepository;
         }
 
-        [HttpGet]
-        [Route("api/product/GetProducts")]
-        public IEnumerable<Product> Get()
+        [System.Web.Http.HttpGet]
+        [System.Web.Http.Route("api/product/GetProducts")]
+        public async Task<HttpResponseMessage> Get()
         {
-            return _productRepository.GetAllProducts();
+            try
+            {
+                var productList = await
+                    Task.Run(() => _productRepository.GetAllProducts());
+                if (productList == null)
+                {
+                    throw new PersistenceValidationException("Validation Error",
+                        new List<BrokenRule> { new BrokenRule("Not Data Found", "Product list is empty.") });
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, productList);
+            }
+            catch (PersistenceValidationException ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, ex.BrokenRules);
+            }
         }
 
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         [SwaggerOperation(Tags = new[] { "Product_AdditionalApi" })] // Just to show use of SwaggerOperation Tag
-        [Route("api/product/GetProductById/{id}")]
-        public IHttpActionResult Get(int id)
+        [System.Web.Http.Route("api/product/GetProductById/{id}")]
+        public async Task<HttpResponseMessage> Get(int id)
         {
-            var product = _productRepository.GetProduct(id);
-            if (product == null)
+            try
             {
-                return NotFound();
+                var product = await
+                    Task.Run(() => _productRepository.GetProduct(id));
+                if (product == null)
+                {
+                    throw new PersistenceValidationException("Validation Error",
+                        new List<BrokenRule> { new BrokenRule("Not Found", "No product found for the given id.") });
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, product);
+            }
+            catch (PersistenceValidationException ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, ex.BrokenRules);
             }
 
-            return Ok(product);
+
         }
 
-        [HttpPost]
-        [Route("api/product/AddProduct")]
-        public IHttpActionResult AddProduct(Product product)
+        [System.Web.Http.HttpPost]
+        [System.Web.Http.Route("api/product/AddProduct")]
+        public async Task<HttpResponseMessage> AddProduct(Product product)
         {
-            var result = _productRepository.AddProduct(product);
-            if (result == true)
+            try
             {
-                return Ok(product);
+                if (product == null)
+                {
+                    throw new PersistenceValidationException("Validation Error",
+                        new List<BrokenRule> { new BrokenRule("Empty", "No product to add.") });
+                }
+
+                var isProductAdded = await
+                    Task.Run(() => _productRepository.AddProduct(product));
+
+                if (isProductAdded == false)
+                {
+                    throw new PersistenceValidationException("Database Error",
+                        new List<BrokenRule> { new BrokenRule("Save Changes Error", "Product can't be added successfully.") });
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, product);
             }
-            return BadRequest("Product is not added because of some error.");
+            catch (PersistenceValidationException ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, ex.BrokenRules);
+            }
+
         }
 
-        [HttpPut]
-        [Route("api/product/UpdateProduct/{id}")]
-        public IHttpActionResult UpdateProduct(int id, Product product)
+        [System.Web.Http.HttpPut]
+        [System.Web.Http.Route("api/product/UpdateProduct/{id}")]
+        public async Task<HttpResponseMessage> UpdateProduct(int id, Product product)
         {
-            var products = _productRepository.UpdateProduct(id, product);
-            if (products != null)
+            try
             {
-                return Ok(products);
+                var products = await
+                    Task.Run(() => _productRepository.UpdateProduct(id, product));
+                if (products == null)
+                {
+                    throw new PersistenceValidationException("Validation Error",
+                        new List<BrokenRule> { new BrokenRule("Empty", "No products were found.") });
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, products);
             }
-            return NotFound();
+            catch (PersistenceValidationException ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, ex.BrokenRules);
+            }
         }
 
-        [HttpDelete]
-        [Route("api/product/DeleteProduct/{id}")]
-        public IHttpActionResult DeleteProduct(int id)
+        [System.Web.Http.HttpDelete]
+        [System.Web.Http.Route("api/product/DeleteProduct/{id}")]
+        public async Task<HttpResponseMessage> DeleteProduct(int id)
         {
-            var result = _productRepository.RemoveProduct(id);
-            if (result == true)
+            try
             {
-                return Ok(_productRepository.GetAllProducts());
+                var result = await 
+                    Task.Run( () => _productRepository.RemoveProduct(id));
+                if (result == false)
+                {
+                    throw new PersistenceValidationException("Validation Error",
+                        new List<BrokenRule> { new BrokenRule("Empty", "No product was found to delete for the given id.") });
+                }
+                return Request.CreateResponse(HttpStatusCode.OK, _productRepository.GetAllProducts());
             }
-            return NotFound();
+            catch (PersistenceValidationException ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.BadRequest, ex.BrokenRules);
+            }
         }
     }
 }

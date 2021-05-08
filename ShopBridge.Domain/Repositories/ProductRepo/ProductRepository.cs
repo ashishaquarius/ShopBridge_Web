@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ShopBridge.Domain.Common;
 using ShopBridge.Domain.Models.DatabaseEntities;
 using ShopBridge.Domain.Models.Mappings;
-using ShopBridge.Domain.Models.Validation.Common;
 
 namespace ShopBridge.Domain.Repositories.ProductRepo
 {
@@ -18,13 +18,14 @@ namespace ShopBridge.Domain.Repositories.ProductRepo
 
         public bool AddProduct(Product product)
         {
-            if (_productValidator.IsValid(product))
+            if (!_productValidator.IsValid(product))
             {
-                _dbContext.Products.Add(product);
-                _dbContext.SaveChanges();
-                return true;
+                    throw new PersistenceValidationException("Validation Error",
+                        _productValidator.BrokenRules(product));
             }
-            return false;
+            _dbContext.Products.Add(product);
+            _dbContext.SaveChanges();
+            return true;
         }
 
         public List<Product> GetAllProducts()

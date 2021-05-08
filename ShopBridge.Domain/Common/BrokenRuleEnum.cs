@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace ShopBridge.Domain.Models.Validation.Common
+namespace ShopBridge.Domain.Common
 {
     public enum BrokenRuleEnum
     {

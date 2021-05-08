@@ -54,11 +54,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\PersistenceValidationException.cs" />
     <Compile Include="Models\DatabaseEntities\Product.cs" />
     <Compile Include="Models\Mappings\ShopBridgeDbContext.cs" />
-    <Compile Include="Models\Validation\Common\BrokenRule.cs" />
-    <Compile Include="Models\Validation\Common\BrokenRuleEnum.cs" />
-    <Compile Include="Models\Validation\Common\IValidator.cs" />
+    <Compile Include="Common\BrokenRule.cs" />
+    <Compile Include="Common\BrokenRuleEnum.cs" />
+    <Compile Include="Common\IValidator.cs" />
     <Compile Include="Models\Validation\Validators\ProductValidator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repositories\ProductRepo\IProductRepository.cs" />

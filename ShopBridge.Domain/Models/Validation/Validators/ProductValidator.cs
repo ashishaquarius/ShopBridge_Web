@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ShopBridge.Domain.Common;
 using ShopBridge.Domain.Models.DatabaseEntities;
-using ShopBridge.Domain.Models.Validation.Common;
 
 namespace ShopBridge.Domain.Models.Validation.Validators
 {

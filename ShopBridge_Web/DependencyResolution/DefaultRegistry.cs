@@ -15,8 +15,8 @@
 // </copyright>
 // --------------------------------------------------------------------------------------------------------------------
 
+using ShopBridge.Domain.Common;
 using ShopBridge.Domain.Models.DatabaseEntities;
-using ShopBridge.Domain.Models.Validation.Common;
 using ShopBridge.Domain.Models.Validation.Validators;
 using ShopBridge.Domain.Repositories.ProductRepo;
 

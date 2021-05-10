@@ -14,10 +14,17 @@ using Swashbuckle.Swagger.Annotations;
 namespace ShopBridge_Web.Controllers.ApiControllers
 {
 
+    /// <summary>
+    /// Product Controller has all the api endpoints to support basic crud operations.
+    /// </summary>
     public class ProductController : ApiController
     {
         private readonly IProductRepository _productRepository;
 
+        /// <summary>
+        /// Using controller constructor for dependency injection. 
+        /// </summary>
+        /// <param name="productRepository"></param>
         public ProductController(IProductRepository productRepository)
         {
             _productRepository = productRepository;

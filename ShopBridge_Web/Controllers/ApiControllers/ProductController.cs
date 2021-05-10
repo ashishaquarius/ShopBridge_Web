@@ -23,6 +23,9 @@ namespace ShopBridge_Web.Controllers.ApiControllers
             _productRepository = productRepository;
         }
 
+        /// <summary>
+        /// Returns the list of all Products
+        /// </summary>
         [System.Web.Http.HttpGet]
         [System.Web.Http.Route("api/product/GetProducts")]
         public async Task<HttpResponseMessage> Get()
@@ -44,8 +47,15 @@ namespace ShopBridge_Web.Controllers.ApiControllers
             }
         }
 
+        /// <summary>
+        /// Returns the product for the given id. Just to show use of SwaggerOperation Tag
+        /// </summary>
+        /// <remarks>
+        /// Parameters: 
+        ///     id (required)
+        /// </remarks>
         [System.Web.Http.HttpGet]
-        [SwaggerOperation(Tags = new[] { "Product_AdditionalApi" })] // Just to show use of SwaggerOperation Tag
+        [SwaggerOperation(Tags = new[] { "Product_AdditionalApi" })]
         [System.Web.Http.Route("api/product/GetProductById/{id}")]
         public async Task<HttpResponseMessage> Get(int id)
         {
@@ -69,6 +79,18 @@ namespace ShopBridge_Web.Controllers.ApiControllers
 
         }
 
+        /// <summary>
+        /// Adds a product record for the given payload.
+        /// </summary>
+        /// <remarks>
+        /// Parameters:
+        /// 
+        ///     Name (required)
+        /// 
+        ///     Description (required)
+        /// 
+        ///     Price (required and greater than zero)
+        /// </remarks>
         [System.Web.Http.HttpPost]
         [System.Web.Http.Route("api/product/AddProduct")]
         public async Task<HttpResponseMessage> AddProduct(Product product)
@@ -99,6 +121,14 @@ namespace ShopBridge_Web.Controllers.ApiControllers
 
         }
 
+        /// <summary>
+        /// Update a product record for the given payload and id.
+        /// </summary>
+        /// <remarks>
+        /// Parameters:
+        /// 
+        ///     id (required)
+        /// </remarks>
         [System.Web.Http.HttpPut]
         [System.Web.Http.Route("api/product/UpdateProduct/{id}")]
         public async Task<HttpResponseMessage> UpdateProduct(int id, Product product)
@@ -120,6 +150,12 @@ namespace ShopBridge_Web.Controllers.ApiControllers
             }
         }
 
+        /// <summary>
+        /// Deletes a product record for the given id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="PersistenceValidationException"></exception>
         [System.Web.Http.HttpDelete]
         [System.Web.Http.Route("api/product/DeleteProduct/{id}")]
         public async Task<HttpResponseMessage> DeleteProduct(int id)
